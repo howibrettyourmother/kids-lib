@@ -1,0 +1,14 @@
+<!doctype html><meta charset="utf-8"><title>kids-lib test</title><body><pre id="o"></pre><script src="kids.js"></script>
+<script>
+var R=[];function ok(n,c){R.push((c?'PASS ':'FAIL ')+n)}
+localStorage.clear();localStorage.setItem('tg_best','42');localStorage.setItem('tg_hard','1');
+ok('kid from ?kid',KIDS.kid()===(new URLSearchParams(location.search).get('kid')||'alex'));
+var s=KIDS.store('tg',{migrate:['best','hard']});ok('migrated to alex',localStorage.getItem('tg_alex_best')==='42'&&localStorage.getItem('tg_alex_hard')==='1');
+ok('legacy kept',localStorage.getItem('tg_best')==='42');
+var z=KIDS.store('tg',{kid:'zoe',migrate:['best']});ok('zoe empty',z.get('best',null)===null);z.set('best',7);ok('zoe set',localStorage.getItem('tg_zoe_best')==='7');
+z.setJSON('b',{a:1});ok('json',z.json('b',{}).a===1);
+ok('profile',KIDS.profile('zoe').little===true&&KIDS.profile('alex').age===7);
+var S=KIDS.sound('tg');S.setMuted(true);ok('mute remembered',localStorage.getItem('tg_muted')==='1');S.setMuted(false);
+ok('guard',!!window.__AG);ok('ctx',!!S.ctx());S.tone(440,.1);S.setPaused(true);ok('paused',S.paused);S.setPaused(false);
+document.getElementById('o').textContent=R.join('\n');window.__R=R;
+</script>
